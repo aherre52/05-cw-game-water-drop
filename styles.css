@@ -143,3 +143,189 @@ body {
         height: 70vh;
     }
 }
+
+/* New styles for the Bootstrap-based layout */
+
+/* Soft charity: water-friendly background */
+.bg-soft-yellow {
+    background-color: #fff8e1; /* soft pale yellow */
+}
+
+.game-area {
+    /* Fixed aspect-like area but responsive */
+    width: 100%;
+    height: 60vh;
+    min-height: 360px;
+    max-height: 720px;
+    background: linear-gradient(180deg, #e6f7ff 0%, #ffffff 100%);
+    border: 2px solid #2e9df7; /* charity water blue */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Game shell positions logo and controls relative to the game area */
+.game-shell {
+    display: inline-block;
+}
+
+.game-logo {
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    top: -5px; /* place 5px above the top of the game screen */
+    max-width: 180px;
+}
+
+.stats-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.reset-left {
+    /* right:100% places the button to the left of the container; small negative margin to touch the edge */
+    margin-right: -5px;
+}
+
+/* large logo variant requested */
+.game-logo.large-logo {
+    max-width: 720px; /* 4x larger than 180 */
+}
+
+/* remove empty rule */
+
+/* Increase player size by 20% on mobile as requested */
+@media (max-width: 576px) {
+    #player {
+        width: 86px !important; /* 72px * 1.2 ≈ 86px */
+        height: 53px !important; /* 44px * 1.2 ≈ 53px */
+    }
+    #player.with-image {
+        width: 86px !important;
+        height: 53px !important;
+    }
+}
+
+/* Consistent spacing for game elements */
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+.mt-3 {
+    margin-top: 1rem !important;
+}
+
+/* Button styling */
+#reset-btn {
+    min-width: 65px;  /* Match the spacer width */
+}
+
+/* Ensure elements inside game area can be absolutely positioned */
+#game-container {
+    position: relative;
+    padding: 5px; /* small inner padding so player can move almost to edges */
+}
+
+/* Small screens adjustments */
+@media (max-width: 576px) {
+    .game-area {
+        height: 55vh;
+        min-height: 300px;
+    }
+    #top-bar .flex-fill {
+        display: none; /* hide logo on very small screens to save space */
+    }
+}
+
+/* Drop styles */
+.drop {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none; /* collisions handled in JS */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    animation-name: dropFall;
+    animation-timing-function: linear;
+}
+
+.drop.clean {
+    background: radial-gradient(circle at 30% 30%, #ffffff, #2E9DF7);
+}
+
+.drop.dirty {
+    background: radial-gradient(circle at 30% 30%, #f7e6e6, #d9534f);
+}
+
+/* jerry can player */
+/* Player element will show the jerry-can image via inline style; keep minimal base styles */
+#player.jerry-can {
+    border-radius: 4px;
+    display: block;
+    cursor: grab;
+    touch-action: none; /* Prevent scrolling while dragging on touch devices */
+    background-color: transparent;
+    overflow: hidden;
+}
+
+#player.jerry-can:active {
+    cursor: grabbing;
+    background: linear-gradient(180deg, #1aaf55, #128040);
+}
+
+/* Make sure the jerry can is visible and appropriately sized on small screens */
+@media (max-width: 576px) {
+    #player {
+        width: 72px !important; /* scaled down for phones */
+        height: 44px !important;
+        bottom: 10px !important;
+        border: 2px solid rgba(255,255,255,0.25);
+    }
+}
+
+/* If an image is available, show it instead of the solid rectangle */
+#player.with-image {
+    background-color: transparent;
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+/* Ensure the image scales nicely on small screens */
+@media (max-width: 576px) {
+    #player.with-image {
+        width: 72px !important;
+        height: 44px !important;
+    }
+}
+
+/* celebration text */
+.celebration {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.95);
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-weight: 700;
+    color: #2E9DF7;
+    z-index: 50;
+}
+
+/* game over overlay */
+#game-over-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+#game-over-overlay .game-over-inner {
+    background: #fff;
+    color: #d9534f;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-size: 24px;
+    font-weight: 800;
+}
