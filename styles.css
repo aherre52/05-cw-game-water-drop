@@ -237,6 +237,114 @@ body {
     }
 }
 
+/* MOBILE-SPECIFIC OVERRIDES: keep desktop unchanged, only apply when viewport is very narrow */
+@media (max-width: 480px) {
+    /* Ensure no horizontal scroll: use percentage widths (avoid 100vw) so scrollbars don't create overflow */
+    .container, .game-shell, .game-area, #game-container {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        overflow-x: hidden;
+    }
+
+    /* Make the game-shell stack its children vertically on mobile so order is predictable and no absolute offsets hide elements */
+    .game-shell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px; /* reduce gap so Start sits closer to the bottom of the game screen */
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Reduce game area height slightly so content fits better on short viewports */
+    .game-area, #game-container {
+        height: 46vh;
+        min-height: 220px;
+        padding: 6px; /* small breathing room for player at edges */
+        width: 100%;
+    }
+
+    /* Make the logo width match the game area (no overflow) */
+    .game-logo, .game-logo.large-logo {
+        display: block;
+        width: calc(100% - 16px); /* account for side padding */
+        max-width: calc(100% - 16px);
+        height: auto;
+        object-fit: contain;
+        top: -4px;
+    }
+
+    /* Stack Start then Reset under the game screen by setting explicit order values */
+    #game-logo { order: 0; }
+    #game-container { order: 1; }
+    /* Bring the Start button a bit higher (closer to the game area) */
+    .start-center { order: 2; width: 100%; display:flex; flex-direction:column; gap:6px; align-items:center; margin-top: 2px; }
+    /* Ensure Reset is directly beneath Start by removing absolute positioning and placing it inside the normal flow */
+    #reset-bottom {
+        order: 3;
+        position: static !important;
+        right: auto !important;
+        top: auto !important;
+        display: inline-block;
+        margin: 0 auto 0 auto;
+    }
+    .stats-stack { order: 4; align-self: flex-start; margin-left: 8px; }
+
+    /* Reduce player size a bit more on tiny screens to avoid overlap */
+    #player.with-image, #player.jerry-can {
+        width: 64px !important;
+        height: 40px !important;
+    }
+
+    /* Make drops fall faster on mobile so missed drops are counted quicker */
+    .drop {
+        animation-duration: 2s !important; /* Override the 3-5s from script.js */
+    }
+
+    /* Prevent body from causing horizontal scroll due to any small offsets */
+    body, html {
+        overflow-x: hidden;
+    }
+}
+
+/* Remove extra vertical space and center offsets on very small screens so content is tightly stacked
+   This only applies on mobile narrow viewports and preserves desktop layout unchanged */
+@media (max-width: 480px) {
+    /* Stop body from vertically centering everything */
+    body {
+        display: block; /* disable flex centering from global rule */
+        padding-top: 8px;
+        padding-bottom: 12px;
+    }
+
+    /* Shrink container vertical padding so logo and controls are closer to the game area */
+    .container.py-4 {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+
+    /* Make the game-shell a normal block flow container so it stacks naturally */
+    .game-shell {
+        display: block;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Ensure the start-center and stats are visible without extra offsets */
+    .start-center, .stats-stack {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        margin-top: 8px;
+    }
+}
+
 /* Drop styles */
 .drop {
     position: absolute;
@@ -309,6 +417,32 @@ body {
     font-weight: 700;
     color: #2E9DF7;
     z-index: 50;
+}
+
+/* Win overlay styles */
+#win-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(46,157,247,0.12), rgba(46,157,247,0.06));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 120;
+}
+#win-overlay .win-inner {
+    background: #fff;
+    padding: 18px 22px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 900;
+    color: #159A48;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+#win-overlay .win-sub {
+    font-weight: 600;
+    color: #2E9DF7;
+    font-size: 14px;
+    margin-top: 6px;
 }
 
 /* game over overlay */

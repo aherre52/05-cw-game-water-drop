@@ -119,7 +119,12 @@ function createDrop() {
 
   // Remove drops that reach the bottom (weren't clicked)
   drop.addEventListener('animationend', () => {
-    // when animation finishes, treat as missed drop (no change to score)
+    // when animation finishes treat as missed drop
+    // if it's a clean drop (good water) the player missed it -> decrease score
+    if (drop.dataset.type === 'clean') {
+      score = Math.max(0, score - 1);
+      updateUI();
+    }
     removeDrop(drop);
   });
 
@@ -149,8 +154,10 @@ function handleCollision(drop) {
   if (type === 'clean') {
     score += 1;
     // extra credit: confetti when threshold reached
-    if (score === 20) {
-      showCelebration();
+    if (score >= 20) {
+      // Player reached the winning score
+      showWin();
+      return;
     }
   } else {
     health -= 1;
@@ -196,6 +203,14 @@ function resetGame() {
   const overlay = document.getElementById('game-over-overlay');
   if (overlay) overlay.remove();
 
+  // remove win overlay and any celebration elements
+  const winOverlay = document.getElementById('win-overlay');
+  if (winOverlay) winOverlay.remove();
+  
+  // clean up any lingering celebration banners
+  const celebrations = document.querySelectorAll('.celebration');
+  celebrations.forEach(el => el.remove());
+
   // allow starting again
   playerEnabled = true;
   ensurePlayer();
@@ -209,6 +224,31 @@ function showCelebration() {
   el.textContent = 'You helped supply water!';
   container.appendChild(el);
   setTimeout(() => el.remove(), 2500);
+}
+
+// Show win overlay and stop the game
+function showWin() {
+  // stop spawning drops and disable player
+  if (dropMaker) clearInterval(dropMaker);
+  gameRunning = false;
+  playerEnabled = false;
+
+  const container = document.getElementById('game-container');
+  // create a persistent winning overlay
+  let win = document.getElementById('win-overlay');
+  if (!win) {
+    win = document.createElement('div');
+    win.id = 'win-overlay';
+    win.innerHTML = '<div class="win-inner">You Win! 🎉<div class="win-sub">Thanks — 20 drops collected</div></div>';
+    container.appendChild(win);
+  }
+
+  // optional celebration animation: briefly show the celebration banner too
+  const conf = document.createElement('div');
+  conf.className = 'celebration';
+  conf.textContent = 'Celebration!';
+  container.appendChild(conf);
+  setTimeout(() => conf.remove(), 2200);
 }
 
 function showGameOver() {
